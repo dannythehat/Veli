@@ -21,11 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify Cloudflare secrets
+      - name: Verify Cloudflare token
         shell: bash
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "Missing CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID GitHub Actions secret."
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "Missing CLOUDFLARE_API_TOKEN GitHub Actions secret."
             exit 1
           fi
 
@@ -36,6 +36,23 @@ jobs:
 
       - name: Install Wrangler
         run: npm install -g wrangler@latest
+
+      - name: Resolve Cloudflare account
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            WHOAMI_JSON=$(wrangler whoami --json 2>/dev/null || true)
+            ACCOUNT_ID=$(printf '%s' "$WHOAMI_JSON" | jq -r '.account_id // .account.id // .accounts[0].id // .memberships[0].account.id // .memberships[0].account_id // empty' 2>/dev/null || true)
+            if [ -z "$ACCOUNT_ID" ]; then
+              ACCOUNT_ID=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts?per_page=50" | jq -r '.result[0].id // empty' || true)
+            fi
+            if [ -z "$ACCOUNT_ID" ]; then
+              echo "Could not resolve the Cloudflare account ID from the API token."
+              exit 1
+            fi
+            echo "CLOUDFLARE_ACCOUNT_ID=$ACCOUNT_ID" >> "$GITHUB_ENV"
+          fi
 
       - name: Ensure D1 database exists
         shell: bash
