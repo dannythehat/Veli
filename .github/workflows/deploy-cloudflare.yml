@@ -58,19 +58,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          DB_ID=$(wrangler d1 list --json | jq -r --arg NAME "$D1_NAME" '.[] | select(.name == $NAME) | (.uuid // .database_id // .id)' | head -n1)
+          LIST_JSON=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database?name=$D1_NAME&per_page=50")
+          DB_ID=$(printf '%s' "$LIST_JSON" | jq -r --arg NAME "$D1_NAME" '.result[]? | select(.name == $NAME) | .uuid' | head -n1)
           if [ -z "$DB_ID" ] || [ "$DB_ID" = "null" ]; then
-            CREATE_JSON=$(wrangler d1 create "$D1_NAME" --json)
-            DB_ID=$(echo "$CREATE_JSON" | jq -r '.uuid // .database_id // .id')
+            CREATE_JSON=$(curl -fsS -X POST \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database" \
+              --data "{\"name\":\"$D1_NAME\",\"jurisdiction\":\"eu\"}")
+            DB_ID=$(printf '%s' "$CREATE_JSON" | jq -r '.result.uuid // empty')
           fi
           if [ -z "$DB_ID" ] || [ "$DB_ID" = "null" ]; then
-            echo "Could not resolve the D1 database id."
+            echo "Could not create or resolve the D1 database."
             exit 1
           fi
           echo "DB_ID=$DB_ID" >> "$GITHUB_ENV"
-
-      - name: Apply waitlist schema
-        run: wrangler d1 execute "$D1_NAME" --remote --file=schema.sql
 
       - name: Generate Cloudflare Pages config
         shell: bash
@@ -85,6 +88,9 @@ jobs:
           database_name = "$D1_NAME"
           database_id = "$DB_ID"
           EOF
+
+      - name: Apply waitlist schema
+        run: wrangler d1 execute "$D1_NAME" --remote --file=schema.sql --yes
 
       - name: Ensure Pages project exists
         shell: bash
