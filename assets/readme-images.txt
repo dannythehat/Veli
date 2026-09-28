@@ -1,0 +1,1 @@
+Approved VELI visual set is being wired to the live site.
