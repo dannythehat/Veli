@@ -1,0 +1,7 @@
+.git
+.github
+functions
+README.md
+schema.sql
+worker.js
+wrangler.toml
