@@ -12,19 +12,28 @@
     reveals.forEach((el) => observer.observe(el));
   } else reveals.forEach((el) => el.classList.add('visible'));
 
-  const colorWrap = document.querySelector('.color-main');
   const mainImage = document.getElementById('colorMainImage');
-  const toneFor = (src = '') => src.includes('charcoal') ? 'tone-charcoal' : src.includes('caramel') ? 'tone-caramel' : src.includes('ivory') ? 'tone-ivory' : src.includes('burgundy') ? 'tone-burgundy' : 'tone-oatmeal';
-  colorWrap?.classList.add('tone-oatmeal');
   document.querySelectorAll('.swatch').forEach((button) => {
+    const src = button.dataset.image;
+    if (src) {
+      const preload = new Image();
+      preload.src = src;
+    }
     button.addEventListener('click', () => {
       document.querySelectorAll('.swatch').forEach((b) => b.classList.remove('active'));
       button.classList.add('active');
-      if (colorWrap) {
-        colorWrap.classList.remove('tone-oatmeal','tone-charcoal','tone-caramel','tone-ivory','tone-burgundy');
-        colorWrap.classList.add(toneFor(button.dataset.image));
+      if (mainImage && button.dataset.image) {
+        mainImage.style.opacity = '0';
+        const nextSrc = button.dataset.image;
+        const nextAlt = `${button.dataset.name} VELI paired with a ${button.dataset.bag} handbag`;
+        const swap = new Image();
+        swap.onload = () => {
+          mainImage.src = nextSrc;
+          mainImage.alt = nextAlt;
+          requestAnimationFrame(() => { mainImage.style.opacity = '1'; });
+        };
+        swap.src = nextSrc;
       }
-      if (mainImage) mainImage.alt = `${button.dataset.name} VELI paired with a ${button.dataset.bag} handbag`;
     });
   });
 
