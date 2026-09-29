@@ -14,6 +14,7 @@
 
   const buildCampaignMedia = ({
     section,
+    mediaElement,
     image,
     alt,
     eyebrow,
@@ -24,7 +25,7 @@
     secondaryLabel,
     secondaryHref
   }) => {
-    const media = document.querySelector(`${section} .editorial-media`);
+    const media = mediaElement || document.querySelector(`${section} .editorial-media`);
     if (!media) return;
 
     media.classList.add('campaign-media');
@@ -69,6 +70,35 @@
     primaryHref: '#waitlist',
     secondaryLabel: 'See safety features',
     secondaryHref: '#app'
+  });
+
+  buildCampaignMedia({
+    section: '#assistant',
+    image: './assets/file_0000000092c8820aad4e8547f9525c50.png',
+    alt: 'Woman using VELI voice assistance while travelling',
+    eyebrow: 'YOUR AI HELPER',
+    title: 'Say it once. VELI helps.',
+    features: ['Voice requests', 'Send messages', 'Share ETA', 'Smart reminders'],
+    primaryLabel: 'Join the waitlist',
+    primaryHref: '#waitlist',
+    secondaryLabel: 'See what VELI can do',
+    secondaryHref: '#app'
+  });
+
+  const parkingMedia = [...document.querySelectorAll('.editorial-media')].find((media) =>
+    media.querySelector('img[src*="file_00000000bd0c82468db5e44bcdd0e789.png"]')
+  );
+  buildCampaignMedia({
+    mediaElement: parkingMedia,
+    image: './assets/file_00000000232c81f4991e9ca9f729b8da.png',
+    alt: 'VELI remembering where a car was parked and helping guide the user back',
+    eyebrow: 'MEMORY FOR REAL LIFE',
+    title: 'Never forget where you parked.',
+    features: ['Saved parking', 'Route back', 'Voice recall', 'Safer return'],
+    primaryLabel: 'Meet VELI',
+    primaryHref: '#waitlist',
+    secondaryLabel: 'Explore AI help',
+    secondaryHref: '#assistant'
   });
 
   const mainImage = document.getElementById('colorMainImage');
