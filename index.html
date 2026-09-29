@@ -4,21 +4,44 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f7f2ea" />
-  <meta name="description" content="VELI is a fashion-first AI safety companion designed to travel on the side edge of your bag, help with everyday life, watch journeys, detect unusual situations, record when needed and keep trusted people informed." />
-  <title>VELI — Looks like fashion. Thinks like a guardian.</title>
+  <title>VELI. Looks like fashion. Thinks like a guardian.</title>
+  <meta name="description" content="VELI is the AI safety companion that clips to your bag. One tap or one word and it records, shares your live location and alerts the people you trust. Join the waitlist." />
+  <link rel="canonical" href="https://meetveli.dannythehat2.workers.dev/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="VELI" />
+  <meta property="og:url" content="https://meetveli.dannythehat2.workers.dev/" />
+  <meta property="og:title" content="VELI. Looks like fashion. Thinks like a guardian." />
+  <meta property="og:description" content="The AI safety companion that clips to your bag, so help is one tap or one word away. Join the waitlist." />
+  <meta property="og:image" content="https://meetveli.dannythehat2.workers.dev/assets/web/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="VELI, a soft sloth companion, clipped to the side of a handbag. Concept render." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="VELI. Looks like fashion. Thinks like a guardian." />
+  <meta name="twitter:description" content="The AI safety companion that clips to your bag, so help is one tap or one word away." />
+  <meta name="twitter:image" content="https://meetveli.dannythehat2.workers.dev/assets/web/og.jpg" />
+  <meta name="twitter:image:alt" content="VELI, a soft sloth companion, clipped to the side of a handbag. Concept render." />
+
+  <link rel="preload" as="image" href="./assets/web/hero-1100.webp" imagesrcset="./assets/web/hero-640.webp 640w, ./assets/web/hero-1100.webp 1100w" imagesizes="(max-width: 1000px) 100vw, 55vw" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap"></noscript>
+  <link rel="stylesheet" href="./base.css" />
+  <link rel="stylesheet" href="./enhancements.css" />
+  <link rel="stylesheet" href="./sections.css" />
+
+  <!-- Cloudflare Web Analytics. Paste the site token from Cloudflare dashboard > Analytics & Logs > Web Analytics. Leave empty to turn analytics off. -->
+  <script>window.VELI_CF_ANALYTICS_TOKEN = '';</script>
 </head>
 <body>
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="VELI home">VELI</a>
     <nav class="desktop-nav" aria-label="Primary navigation">
-      <a href="#safety">Safety</a>
-      <a href="#home-watch">Home watch</a>
-      <a href="#assistant">AI helper</a>
-      <a href="#app">App</a>
+      <a href="#why">Why VELI</a>
+      <a href="#safe-mode">Safety</a>
+      <a href="#helper">AI helper</a>
       <a href="#colours">Colours</a>
     </nav>
     <a class="button button-small" href="#waitlist">Join the waitlist</a>
@@ -26,142 +49,99 @@
 
   <main>
     <section class="hero section-pad" aria-labelledby="hero-title">
-      <div class="hero-copy reveal">
+      <div class="hero-copy">
         <p class="eyebrow">A BEAUTIFUL AI SAFETY COMPANION</p>
         <h1 id="hero-title">VELI</h1>
         <p class="hero-subtitle">Looks like fashion.<br>Thinks like a guardian.</p>
-        <p class="hero-body">VELI lives on the <strong>side edge of your bag</strong>, crouched close like a real sloth on a tree. It helps with everyday life, watches the world around you and is designed to respond when a journey or situation does not feel right.</p>
-        <div class="hero-actions">
-          <a class="button" href="#waitlist">Join the waitlist <span aria-hidden="true">→</span></a>
-          <a class="button button-ghost" href="#safety">See how VELI helps <span aria-hidden="true">↓</span></a>
-        </div>
-        <div class="hero-trust" aria-label="VELI highlights">
-          <div><span>◇</span><strong>Fashion<br>first</strong></div>
-          <div><span>◉</span><strong>Safety<br>aware</strong></div>
-          <div><span>✦</span><strong>Everyday<br>AI help</strong></div>
-        </div>
+        <p class="hero-body">The AI safety companion that clips to your bag, so help is one tap or one word away.</p>
+
+        <form class="waitlist-form hero-form" data-location="hero" novalidate>
+          <div class="form-row">
+            <label class="sr-only" for="heroEmail">Email address</label>
+            <input id="heroEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="Your email address" required />
+            <button class="button" type="submit">Join the waitlist <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="optional-question" hidden>
+            <label for="heroAnswer">What worries you most when you're out alone? <span>Optional</span></label>
+            <input id="heroAnswer" name="answer" type="text" maxlength="500" autocomplete="off" placeholder="For example, walking home late" />
+          </div>
+          <div class="form-meta">
+            <label><input type="checkbox" name="consent" required /> I agree to receive VELI launch updates. I can unsubscribe at any time.</label>
+          </div>
+          <div class="hp-field" aria-hidden="true">
+            <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+        <p class="signup-count" hidden></p>
       </div>
-      <div class="hero-media reveal" aria-label="VELI mounted to the side edge of a luxury handbag">
-        <img src="./assets/file_000000008b808210b7057088c766718f.png" alt="VELI crouched securely on the side edge of a luxury handbag" />
-        <div class="hero-badge"><span class="status-dot"></span> Always seated on the side edge</div>
+      <div class="hero-media">
+        <img src="./assets/web/hero-1100.webp" srcset="./assets/web/hero-640.webp 640w, ./assets/web/hero-1100.webp 1100w" sizes="(max-width: 1000px) 100vw, 55vw" width="1100" height="1375" fetchpriority="high" alt="VELI clipped to the side edge of a luxury handbag. Concept render." />
+        <div class="hero-badge"><span class="status-dot"></span> Clips to the outside of your bag</div>
       </div>
     </section>
 
-    <section class="manifesto section-pad" aria-labelledby="manifesto-title">
-      <p class="eyebrow centered">SAFETY WITHOUT LOOKING LIKE SAFETY EQUIPMENT</p>
-      <h2 id="manifesto-title">One companion. Three layers of reassurance.</h2>
-      <p class="section-intro">VELI is designed around the moments that matter most: travelling alone, noticing when something changes, and making it easier to get help without needing to stop and manage your phone.</p>
-      <div class="manifesto-grid">
-        <article><span>01</span><h3>Before</h3><p>Safer journey support, live journey sharing and a trusted circle that can stay informed.</p></article>
-        <article><span>02</span><h3>During</h3><p>Unusual-behaviour awareness, fast SOS and automatic audio or video capture when configured to do so.</p></article>
-        <article><span>03</span><h3>After</h3><p>Securely stored context, alerts and recordings designed to preserve what happened when it matters.</p></article>
+    <section class="why-section section-pad" id="why" aria-labelledby="why-title">
+      <div class="why-copy reveal">
+        <p class="eyebrow">THE OBVIOUS QUESTION</p>
+        <h2 id="why-title">Why not just use my phone?</h2>
+        <ol class="why-list">
+          <li><strong>It is on the outside.</strong><p>Your phone is in your pocket or bag. VELI sits on the outside, facing out.</p></li>
+          <li><strong>It is faster.</strong><p>One tap or one phrase. No unlocking, no fumbling.</p></li>
+          <li><strong>It is seen.</strong><p>Visible on your bag, so it can deter as well as record.</p></li>
+          <li><strong>It is beautiful.</strong><p>Something you actually want to wear.</p></li>
+        </ol>
       </div>
+      <figure class="demo-video reveal">
+        <!-- Demo video: drop your file at assets/video/veli-demo.mp4 (H.264, muted, under 8 MB). Until then the poster image shows. -->
+        <video muted loop playsinline preload="none" width="1100" height="1375" poster="./assets/web/demo-poster-640.webp" data-src="./assets/video/veli-demo.mp4" aria-label="VELI demo video"></video>
+        <figcaption>Concept demo</figcaption>
+      </figure>
     </section>
 
-    <section class="editorial-section editorial-dark" id="safety">
+    <section class="safe-mode section-pad" id="safe-mode" aria-labelledby="safe-title">
+      <div class="safe-head reveal">
+        <p class="eyebrow light">“I DON'T FEEL SAFE” MODE</p>
+        <h2 id="safe-title">Say the words. VELI does the rest.</h2>
+        <p class="safe-intro">Choose your own phrase in the app. Say it, or tap VELI, and this happens.</p>
+      </div>
+      <div class="safe-layout">
+        <ol class="safe-steps reveal">
+          <li><span class="safe-icon" aria-hidden="true">“ ”</span><em>01</em><strong>Say the phrase</strong><p>“I don't feel safe.” Or tap VELI once. Your phone stays put.</p></li>
+          <li><span class="safe-icon" aria-hidden="true">◉</span><em>02</em><strong>VELI records</strong><p>Video and audio start straight away, facing out from your bag.</p></li>
+          <li><span class="safe-icon" aria-hidden="true">◎</span><em>03</em><strong>Location shared</strong><p>Your live location goes to the people you chose.</p></li>
+          <li><span class="safe-icon" aria-hidden="true">♡</span><em>04</em><strong>Circle alerted</strong><p>Your trusted circle gets an alert, so someone knows and can act.</p></li>
+        </ol>
+        <div class="safe-media reveal">
+          <img src="./assets/web/safe-mode-640.webp" srcset="./assets/web/safe-mode-640.webp 640w, ./assets/web/safe-mode-1100.webp 1100w" sizes="(max-width: 1000px) 100vw, 40vw" width="1100" height="1375" loading="lazy" decoding="async" alt="A woman walking at night with VELI on her bag while it records. Concept render." />
+        </div>
+      </div>
+      <p class="safe-extra reveal">Also built in: live journey sharing, arrival check-ins and quick SOS.</p>
+    </section>
+
+    <section class="editorial-section editorial-sand" id="helper">
       <div class="editorial-media reveal">
-        <img src="./assets/file_0000000048408210b65a1e0037614ba5.png" alt="VELI security concept showing live journey, unusual behaviour alerts, automatic capture and trusted circle updates" />
+        <img src="./assets/web/helper-640.webp" srcset="./assets/web/helper-640.webp 640w, ./assets/web/helper-1100.webp 1100w" sizes="(max-width: 1000px) 100vw, 54vw" width="1100" height="1375" loading="lazy" decoding="async" alt="A woman walking past a cash machine with VELI on her bag. Concept render." />
       </div>
       <div class="editorial-copy reveal">
-        <p class="eyebrow light">TRAVEL SAFER</p>
-        <h2>Security that thinks ahead.</h2>
-        <p class="lead">VELI is intended to do more than wait for you to press a panic button. During an active journey it can combine location, context and configured safety rules to help recognise when something may be wrong.</p>
-        <div class="feature-list">
-          <div><span>◎</span><div><strong>Live journey</strong><p>Share a journey with the people you choose, only when you want to.</p></div></div>
-          <div><span>△</span><div><strong>Unusual behaviour alerts</strong><p>Designed to notice patterns or behaviour that may deserve your attention.</p></div></div>
-          <div><span>◉</span><div><strong>Automatic capture</strong><p>When configured, VELI can begin audio and video capture if a safety trigger is detected.</p></div></div>
-          <div><span>♡</span><div><strong>Trusted circle</strong><p>Keep chosen people updated without broadcasting your location permanently.</p></div></div>
-          <div><span>!</span><div><strong>Quick SOS</strong><p>A fast path to alert trusted contacts when you need help immediately.</p></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="editorial-section editorial-light" id="home-watch">
-      <div class="editorial-copy reveal">
-        <p class="eyebrow">HOME WATCH</p>
-        <h2>Awake when something feels wrong.</h2>
-        <p class="lead">VELI can also be useful when you are at home. In a future Home Watch mode, it is intended to wake when configured triggers suggest something unusual is happening nearby.</p>
-        <div class="feature-list compact">
-          <div><span>⌁</span><div><strong>Smart detection</strong><p>Notice unexpected movement or unusual activity in the environment around it.</p></div></div>
-          <div><span>●</span><div><strong>Wake + record</strong><p>Begin configured audio and video capture without waiting for you to reach your phone.</p></div></div>
-          <div><span>◇</span><div><strong>Trusted alerts</strong><p>Send an alert to the contacts you have chosen.</p></div></div>
-          <div><span>☁</span><div><strong>Secure storage</strong><p>Preserve important captured moments privately for later review.</p></div></div>
-        </div>
-      </div>
-      <div class="editorial-media reveal">
-        <img src="./assets/file_00000000b41482108979e85395084ec1.png" alt="VELI Home Watch concept with smart detection, automatic recording, trusted alerts and secure storage" />
-      </div>
-    </section>
-
-    <section class="app-principles section-pad" id="app">
-      <div class="app-principles-head">
-        <p class="eyebrow centered">THE VELI APP</p>
-        <h2>Built around reassurance, not clutter.</h2>
-        <p class="section-intro">Directions and everyday questions are natural AI behaviour. The app should focus on the things that make VELI genuinely different: the safety layer around you, your journey and your trusted people.</p>
-      </div>
-      <div class="app-grid">
-        <article><span class="app-icon">◎</span><h3>Live Journey</h3><p>Start a protected journey, share it selectively and see when you arrive.</p></article>
-        <article><span class="app-icon">△</span><h3>Risk Detection</h3><p>Surface unusual behaviour or changing situations that may need attention.</p></article>
-        <article><span class="app-icon">◉</span><h3>Auto Capture</h3><p>Allow configured safety triggers to start audio and video recording.</p></article>
-        <article><span class="app-icon">♡</span><h3>Trusted Circle</h3><p>Choose who receives journey updates, alerts and safety check-ins.</p></article>
-        <article><span class="app-icon">!</span><h3>Quick SOS</h3><p>Reach your chosen people quickly when you need immediate help.</p></article>
-        <article><span class="app-icon">⌂</span><h3>Home Watch</h3><p>Use VELI as an intelligent extra set of eyes and ears when configured at home.</p></article>
-      </div>
-    </section>
-
-    <section class="editorial-section editorial-sand" id="assistant">
-      <div class="editorial-media reveal">
-        <img src="./assets/file_00000000a374820ab6fd1da9d2aaf44d.png" alt="VELI AI helper composing and sending a message to Mum while travelling" />
-      </div>
-      <div class="editorial-copy reveal">
-        <p class="eyebrow">YOUR AI HELPER</p>
+        <p class="eyebrow">YOUR EVERYDAY HELPER</p>
         <h2>Say it once. VELI handles the little things.</h2>
-        <p class="lead">The safety layer is what makes VELI special, but it is still an AI companion. You should be able to talk naturally while you move and let VELI handle useful everyday actions.</p>
+        <p class="lead">Most days you won't need rescuing. You'll need a hand. Talk to VELI as you walk and it gets small jobs done.</p>
         <div class="helper-examples">
-          <div><q>Text Mum: I’m on my way. See you in ten minutes.</q><span>Draft, confirm, send and optionally share your ETA.</span></div>
-          <div><q>Remind me to call Sarah when I get home.</q><span>Remember context instead of making you set up a manual reminder.</span></div>
-          <div><q>What time is my flight and which gate am I leaving from?</q><span>Bring useful travel information together while you are already moving.</span></div>
-          <div><q>Remember I left the spare key in the blue drawer.</q><span>Store the small details you know you will forget later.</span></div>
-          <div><q>Translate this for me.</q><span>Help with language, signs and conversations while travelling.</span></div>
+          <div><q>Text Mum. I'm on my way.</q><span>VELI writes it, checks with you, then sends.</span></div>
+          <div><q>Where's the nearest ATM?</q><span>Walking directions without getting your phone out.</span></div>
+          <div><q>Find the number for the restaurant.</q><span>VELI finds it and offers to call.</span></div>
         </div>
       </div>
     </section>
 
-    <section class="editorial-section editorial-light">
-      <div class="editorial-copy reveal">
-        <p class="eyebrow">MEMORY THAT IS ACTUALLY USEFUL</p>
-        <h2>“VELI, where did I park?”</h2>
-        <p class="lead">VELI should remember useful context automatically when you ask it to. Your car is the perfect example: save the level and space, then guide you back when it is time to leave.</p>
-        <div class="story-points wide-points">
-          <span>Parking location</span><span>Level + bay</span><span>Route back</span><span>Voice recall</span><span>Safer return</span>
-        </div>
-      </div>
-      <div class="editorial-media reveal">
-        <img src="./assets/file_00000000bd0c82468db5e44bcdd0e789.png" alt="VELI remembering a parked car and showing the route back to it" />
-      </div>
-    </section>
-
-    <section class="social-section section-pad" id="connected">
-      <div class="social-copy reveal">
-        <p class="eyebrow">WHEN YOU LOSE THE GROUP</p>
-        <h2>Find your people again.</h2>
-        <p>At a festival, on holiday or in a crowded city, friends can choose to share their VELI location with one another for a limited time. It is practical, opt-in and designed for real moments when a group gets separated.</p>
-        <div class="story-points wide-points"><span>Friend location</span><span>Live distance</span><span>Temporary sharing</span><span>Meet-up support</span></div>
-      </div>
-      <div class="social-media reveal">
-        <img src="./assets/file_000000003904820ab79498b503b8615e.png" alt="Festival-goer using VELI to find friends in a crowd" />
-      </div>
-    </section>
-
-    <section class="movement-section section-pad">
-      <div class="movement-media reveal">
-        <img src="./assets/file_000000005a8481f4b663d25a7a531f18.png" alt="VELI demonstrating natural head movement while remaining attached to the side edge of a handbag" />
-      </div>
-      <div class="movement-copy reveal">
-        <p class="eyebrow">PRESENT, NOT PASSIVE</p>
-        <h2>The body stays seated. The head can look around.</h2>
-        <p>VELI remains crouched securely on the <strong>outer side edge</strong> of the bag while its head is designed to turn outward. That is what gives it personality — and lets its sensors face the world rather than the bag.</p>
-        <div class="story-points wide-points"><span>Side-edge mounted</span><span>Natural head turn</span><span>Outward-facing sensors</span><span>Compact body</span></div>
+    <section class="coming-next section-pad" aria-labelledby="next-title">
+      <p class="eyebrow centered">COMING NEXT</p>
+      <h2 id="next-title">More on the way.</h2>
+      <div class="next-grid">
+        <article class="reveal"><span class="app-icon" aria-hidden="true">⌂</span><h3>Home Watch</h3><p>Leave VELI at home. It notices unusual movement and alerts you.</p></article>
+        <article class="reveal"><span class="app-icon" aria-hidden="true">P</span><h3>Parking memory</h3><p>“Where did I park?” VELI remembers the level and bay and walks you back.</p></article>
+        <article class="reveal"><span class="app-icon" aria-hidden="true">◌</span><h3>Find your friends</h3><p>Lost the group at a festival? Share locations with friends for a set time.</p></article>
       </div>
     </section>
 
@@ -170,50 +150,54 @@
       <h2 id="colours-title">Choose the VELI that belongs on your bag.</h2>
       <p class="section-intro">The technology stays discreet. The colour becomes part of your look.</p>
       <div class="colour-gallery">
-        <article class="colour-card reveal"><img src="./assets/file_00000000663c824386e371e22a296aa8.png" alt="Oatmeal VELI colourway"><div><strong>Oatmeal</strong><span>Warm neutral</span></div></article>
-        <article class="colour-card reveal"><img src="./assets/file_00000000bd70821085f1beed29aef3bd.png" alt="Charcoal VELI colourway"><div><strong>Charcoal</strong><span>Deep modern grey</span></div></article>
-        <article class="colour-card reveal"><img src="./assets/file_00000000e97c820aba631242bbbde8e9.png" alt="Caramel VELI colourway"><div><strong>Caramel</strong><span>Rich warm brown</span></div></article>
-        <article class="colour-card reveal"><img src="./assets/file_00000000ef8c820ab9a671037bcfcf9e.png" alt="Ivory VELI colourway"><div><strong>Ivory</strong><span>Soft cream</span></div></article>
-        <article class="colour-card reveal"><img src="./assets/file_00000000fc588210ad04d555e8298e17.png" alt="Mocha VELI colourway"><div><strong>Mocha</strong><span>Dark chocolate</span></div></article>
-      </div>
-    </section>
-
-    <section class="closing-section section-pad">
-      <div class="closing-card reveal">
-        <p class="eyebrow centered">THE IDEA BEHIND VELI</p>
-        <h2>Something you want to carry.<br><em>Something designed to look out for you.</em></h2>
-        <p>VELI is not meant to feel like an alarm hanging from your bag. It is a beautiful AI companion first — with personal safety, awareness, memory and communication built quietly underneath.</p>
-        <div class="closing-tags"><span>Travel safety</span><span>Automatic capture</span><span>Home watch</span><span>Trusted circle</span><span>Everyday AI</span></div>
+        <article class="colour-card"><img src="./assets/web/colour-oatmeal-640.webp" width="640" height="800" loading="lazy" decoding="async" alt="Oatmeal VELI colourway. Concept render."><div><strong>Oatmeal</strong><span>Warm neutral</span></div></article>
+        <article class="colour-card"><img src="./assets/web/colour-charcoal-640.webp" width="640" height="800" loading="lazy" decoding="async" alt="Charcoal VELI colourway. Concept render."><div><strong>Charcoal</strong><span>Deep modern grey</span></div></article>
+        <article class="colour-card"><img src="./assets/web/colour-caramel-640.webp" width="640" height="800" loading="lazy" decoding="async" alt="Caramel VELI colourway. Concept render."><div><strong>Caramel</strong><span>Rich warm brown</span></div></article>
+        <article class="colour-card"><img src="./assets/web/colour-ivory-640.webp" width="640" height="800" loading="lazy" decoding="async" alt="Ivory VELI colourway. Concept render."><div><strong>Ivory</strong><span>Soft cream</span></div></article>
+        <article class="colour-card"><img src="./assets/web/colour-mocha-640.webp" width="640" height="800" loading="lazy" decoding="async" alt="Mocha VELI colourway. Concept render."><div><strong>Mocha</strong><span>Dark chocolate</span></div></article>
       </div>
     </section>
 
     <section class="waitlist" id="waitlist">
-      <div class="waitlist-image"><img src="./assets/file_00000000fba081f48929a2a37616507e.png" alt="VELI lifestyle concept" /></div>
+      <div class="waitlist-image"><img src="./assets/web/waitlist-640.webp" srcset="./assets/web/waitlist-640.webp 640w, ./assets/web/waitlist-1100.webp 1100w" sizes="(max-width: 650px) 100vw, 40vw" width="1100" height="1375" loading="lazy" decoding="async" alt="A woman with coffee and VELI on her bag. Concept render." /></div>
       <div class="waitlist-copy">
         <p class="eyebrow">BE FIRST TO MEET VELI</p>
         <h2>Join the VELI waitlist.</h2>
-        <p>Get product updates, early access and first notice when reservations open.</p>
-        <form id="waitlistForm" class="waitlist-form" novalidate>
-          <label class="sr-only" for="email">Email address</label>
+        <p>Early access, product updates and first notice when reservations open.</p>
+        <p class="signup-count" hidden></p>
+        <form class="waitlist-form" data-location="footer" novalidate>
           <div class="form-row">
-            <input id="email" name="email" type="email" autocomplete="email" placeholder="Your email address" required />
-            <button class="button" type="submit">Join the waitlist <span>→</span></button>
+            <label class="sr-only" for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="Your email address" required />
+            <button class="button" type="submit">Join the waitlist <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="optional-question">
+            <label for="answer">What worries you most when you're out alone? <span>Optional</span></label>
+            <input id="answer" name="answer" type="text" maxlength="500" autocomplete="off" placeholder="For example, walking home late" />
           </div>
           <div class="form-meta">
             <label><input type="checkbox" name="consent" required /> I agree to receive VELI launch updates. I can unsubscribe at any time.</label>
           </div>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          <div class="hp-field" aria-hidden="true">
+            <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <p class="form-status" role="status" aria-live="polite"></p>
         </form>
         <div class="waitlist-benefits"><span>✓ Early access</span><span>✓ Product updates</span><span>✓ First reservation notice</span></div>
       </div>
       <div class="script-note">Style.<br>Intelligence.<br>Peace of mind. ♡</div>
     </section>
+
+    <section class="privacy-note section-pad" id="privacy" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">Your privacy, in plain English.</h2>
+      <p>When you join, we store your email, your answer if you give one, the time you signed up, the page that sent you here and your country. We use it only to tell you about VELI. We never sell it or share it for marketing. To stop spam we keep a scrambled version of your IP address for up to 24 hours. Every email we send has an unsubscribe link, and you can reply to any VELI email to have your details deleted.</p>
+    </section>
   </main>
 
   <footer class="footer">
     <div><a class="brand" href="#top">VELI</a><p>Your AI safety companion.</p></div>
-    <div class="footer-links"><a href="#safety">Safety</a><a href="#home-watch">Home watch</a><a href="#assistant">AI helper</a><a href="#colours">Colours</a><a href="#waitlist">Waitlist</a></div>
-    <p class="fineprint">VELI is an upcoming product concept. Features shown describe the intended product experience and may evolve through engineering, testing, privacy review and certification.</p>
+    <div class="footer-links"><a href="#why">Why VELI</a><a href="#safe-mode">Safety</a><a href="#helper">AI helper</a><a href="#privacy">Privacy</a><a href="#waitlist">Waitlist</a></div>
+    <p class="fineprint"><strong>All images on this site are concept renders, not photos of a finished product.</strong> VELI is a product in development. Features describe the intended experience and may change through engineering, testing, privacy review and certification.</p>
     <p class="copyright">© <span id="year"></span> VELI. All rights reserved.</p>
   </footer>
 

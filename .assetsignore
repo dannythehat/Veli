@@ -1,7 +1,20 @@
 .git
 .github
-functions
 README.md
 schema.sql
 worker.js
 wrangler.toml
+node_modules
+package.json
+package-lock.json
+.wrangler
+# Originals are kept in the repo but never shipped. The site uses the compressed copies in assets/web.
+assets/*.png
+assets/*.b64
+assets/*.txt
+assets/hero.webp
+assets/lifestyle.webp
+assets/video/README.md
+.dev.vars
+.gitignore
+.assetsignore

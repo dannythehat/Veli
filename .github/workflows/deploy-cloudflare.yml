@@ -81,6 +81,18 @@ jobs:
       - name: Apply waitlist schema
         run: wrangler d1 execute "$D1_NAME" --remote --file=schema.sql --yes
 
+      - name: Add new waitlist columns to existing table
+        shell: bash
+        run: |
+          set -euo pipefail
+          COLUMNS=$(wrangler d1 execute "$D1_NAME" --remote --json --command "SELECT name FROM pragma_table_info('waitlist')")
+          for COLUMN in answer referrer; do
+            if ! printf '%s' "$COLUMNS" | grep -q "\"$COLUMN\""; then
+              echo "Adding column $COLUMN"
+              wrangler d1 execute "$D1_NAME" --remote --yes --command "ALTER TABLE waitlist ADD COLUMN $COLUMN TEXT"
+            fi
+          done
+
       - name: Deploy VELI Worker
         id: deploy
         shell: bash
@@ -89,6 +101,17 @@ jobs:
           wrangler deploy 2>&1 | tee /tmp/veli-deploy.log
           url=$(grep -Eo 'https://[^ ]+\.workers\.dev' /tmp/veli-deploy.log | tail -1 || true)
           echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Sync admin export token
+        env:
+          VELI_ADMIN_TOKEN: ${{ secrets.VELI_ADMIN_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "$VELI_ADMIN_TOKEN" ]; then
+            echo "VELI_ADMIN_TOKEN secret not set. Admin export stays disabled."
+            exit 0
+          fi
+          printf '%s' "$VELI_ADMIN_TOKEN" | wrangler secret put ADMIN_TOKEN
 
       - name: Verify live site
         if: steps.deploy.outputs.url != ''

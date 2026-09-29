@@ -12,162 +12,151 @@
     reveals.forEach((el) => observer.observe(el));
   } else reveals.forEach((el) => el.classList.add('visible'));
 
-  const buildCampaignMedia = ({
-    section,
-    mediaElement,
-    image,
-    alt,
-    eyebrow,
-    title,
-    features,
-    primaryLabel,
-    primaryHref,
-    secondaryLabel,
-    secondaryHref
-  }) => {
-    const media = mediaElement || document.querySelector(`${section} .editorial-media`);
-    if (!media) return;
+  // Cloudflare Web Analytics. SPA mode lets the "/joined" virtual page view count waitlist signups.
+  const analyticsToken = window.VELI_CF_ANALYTICS_TOKEN;
+  if (analyticsToken) {
+    const beacon = document.createElement('script');
+    beacon.defer = true;
+    beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    beacon.dataset.cfBeacon = JSON.stringify({ token: analyticsToken, spa: true });
+    document.head.appendChild(beacon);
+  }
 
-    media.classList.add('campaign-media');
-    const editorialSection = media.closest('.editorial-section');
-    editorialSection?.classList.add('has-campaign-media');
+  // Demo video only loads once it is near the screen, and only if the file exists.
+  const video = document.querySelector('.demo-video video');
+  if (video?.dataset.src) {
+    const loadVideo = () => {
+      const source = document.createElement('source');
+      source.src = video.dataset.src;
+      source.type = 'video/mp4';
+      video.appendChild(source);
+      video.load();
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.autoplay = true;
+        video.play().catch(() => {});
+      }
+    };
+    if ('IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          videoObserver.disconnect();
+          loadVideo();
+        }
+      }, { rootMargin: '200px' });
+      videoObserver.observe(video);
+    } else loadVideo();
+  }
 
-    media.innerHTML = `
-      <img src="${image}" alt="${alt}" />
-      <div class="campaign-shade" aria-hidden="true"></div>
-      <div class="campaign-content">
-        <div class="campaign-brand">VELI <span>✦</span></div>
-        <p class="campaign-eyebrow">${eyebrow}</p>
-        <h3>${title}</h3>
-        <div class="campaign-features">
-          ${features.map((feature) => `<span>${feature}</span>`).join('')}
-        </div>
-        <div class="campaign-actions">
-          <a class="campaign-button" href="${primaryHref}">${primaryLabel} <span aria-hidden="true">→</span></a>
-          ${secondaryLabel ? `<a class="campaign-link" href="${secondaryHref}">${secondaryLabel}</a>` : ''}
-        </div>
-      </div>`;
+  // Real signup count, only shown once the API says it is big enough.
+  const counters = document.querySelectorAll('.signup-count');
+  fetch('/api/waitlist/count')
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (!data || typeof data.count !== 'number') return;
+      const text = `Join ${data.count.toLocaleString('en-GB')} people already on the waitlist.`;
+      counters.forEach((el) => { el.textContent = text; el.hidden = false; });
+    })
+    .catch(() => {});
+
+  const params = new URLSearchParams(window.location.search);
+  const source = ['utm_source', 'utm_medium', 'utm_campaign']
+    .map((key) => params.get(key))
+    .filter(Boolean)
+    .join(' / ') || params.get('ref') || '';
+
+  const successMarkup = (alreadyJoined) => `
+    <div class="form-success" role="status" tabindex="-1">
+      <strong>${alreadyJoined ? 'You are already on the list. ♡' : 'You are on the list. Thank you. ♡'}</strong>
+      <p>We will email you when there is news, and you will be first to reserve.</p>
+      <button class="button button-ghost share-button" type="button">Share VELI with a friend</button>
+    </div>`;
+
+  const shareSite = async (button) => {
+    const shareData = {
+      title: 'VELI',
+      text: 'VELI is an AI safety companion that clips to your bag. I just joined the waitlist.',
+      url: window.location.origin + '/'
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        button.textContent = 'Link copied';
+      }
+    } catch {
+      // Share sheet closed. Nothing to do.
+    }
   };
 
-  buildCampaignMedia({
-    section: '#safety',
-    image: './assets/file_00000000e60081f4a62a09177e301330.png',
-    alt: 'VELI supporting a safer evening journey with live location and safety awareness',
-    eyebrow: 'TRAVEL SAFER. STAY CONNECTED.',
-    title: 'Security that thinks ahead.',
-    features: ['Live journey', 'Auto capture', 'Trusted alerts', 'Quick SOS'],
-    primaryLabel: 'Meet VELI',
-    primaryHref: '#waitlist',
-    secondaryLabel: 'Explore the app',
-    secondaryHref: '#app'
-  });
+  document.querySelectorAll('.waitlist-form').forEach((form) => {
+    const status = form.querySelector('.form-status');
+    const question = form.querySelector('.optional-question');
+    const email = form.querySelector('input[name="email"]');
 
-  buildCampaignMedia({
-    section: '#home-watch',
-    image: './assets/file_000000004c74821082663689a417a42c.png',
-    alt: 'VELI audio and video capture concept for intelligent home safety',
-    eyebrow: 'YOUR QUIET GUARDIAN',
-    title: 'Awake when something feels wrong.',
-    features: ['Smart detection', 'Wake + record', 'Trusted alerts', 'Secure storage'],
-    primaryLabel: 'Join the waitlist',
-    primaryHref: '#waitlist',
-    secondaryLabel: 'See safety features',
-    secondaryHref: '#app'
-  });
+    // Hero form reveals the optional question once someone starts typing.
+    email?.addEventListener('focus', () => { if (question) question.hidden = false; }, { once: true });
 
-  buildCampaignMedia({
-    section: '#assistant',
-    image: './assets/file_0000000092c8820aad4e8547f9525c50.png',
-    alt: 'Woman using VELI voice assistance while travelling',
-    eyebrow: 'YOUR AI HELPER',
-    title: 'Say it once. VELI helps.',
-    features: ['Voice requests', 'Send messages', 'Share ETA', 'Smart reminders'],
-    primaryLabel: 'Join the waitlist',
-    primaryHref: '#waitlist',
-    secondaryLabel: 'See what VELI can do',
-    secondaryHref: '#app'
-  });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.className = 'form-status';
+      const data = new FormData(form);
+      const payload = {
+        email: String(data.get('email') || '').trim(),
+        answer: String(data.get('answer') || '').trim(),
+        consent: data.get('consent') === 'on',
+        website: String(data.get('website') || ''),
+        referrer: document.referrer || '',
+        source: source ? `${source} (${form.dataset.location})` : `website (${form.dataset.location})`
+      };
 
-  const parkingMedia = [...document.querySelectorAll('.editorial-media')].find((media) =>
-    media.querySelector('img[src*="file_00000000bd0c82468db5e44bcdd0e789.png"]')
-  );
-  buildCampaignMedia({
-    mediaElement: parkingMedia,
-    image: './assets/file_00000000232c81f4991e9ca9f729b8da.png',
-    alt: 'VELI remembering where a car was parked and helping guide the user back',
-    eyebrow: 'MEMORY FOR REAL LIFE',
-    title: 'Never forget where you parked.',
-    features: ['Saved parking', 'Route back', 'Voice recall', 'Safer return'],
-    primaryLabel: 'Meet VELI',
-    primaryHref: '#waitlist',
-    secondaryLabel: 'Explore AI help',
-    secondaryHref: '#assistant'
-  });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+        status.textContent = 'Please enter a valid email address.';
+        status.classList.add('error');
+        email?.focus();
+        return;
+      }
+      if (!payload.consent) {
+        status.textContent = 'Please tick the box so we can email you.';
+        status.classList.add('error');
+        return;
+      }
 
-  const mainImage = document.getElementById('colorMainImage');
-  document.querySelectorAll('.swatch').forEach((button) => {
-    const src = button.dataset.image;
-    if (src) {
-      const preload = new Image();
-      preload.src = src;
-    }
-    button.addEventListener('click', () => {
-      document.querySelectorAll('.swatch').forEach((b) => b.classList.remove('active'));
-      button.classList.add('active');
-      if (mainImage && button.dataset.image) {
-        mainImage.style.opacity = '0';
-        const nextSrc = button.dataset.image;
-        const nextAlt = `${button.dataset.name} VELI paired with a ${button.dataset.bag} handbag`;
-        const swap = new Image();
-        swap.onload = () => {
-          mainImage.src = nextSrc;
-          mainImage.alt = nextAlt;
-          requestAnimationFrame(() => { mainImage.style.opacity = '1'; });
-        };
-        swap.src = nextSrc;
+      const submit = form.querySelector('button[type="submit"]');
+      const original = submit.innerHTML;
+      submit.disabled = true;
+      submit.textContent = 'Joining…';
+
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(body.error || 'We could not add you just now. Please try again.');
+
+        form.innerHTML = successMarkup(body.already_joined);
+        const counter = form.nextElementSibling;
+        if (counter?.classList.contains('signup-count')) counter.hidden = true;
+        const success = form.querySelector('.form-success');
+        success.focus({ preventScroll: true });
+        success.querySelector('.share-button').addEventListener('click', (e) => shareSite(e.currentTarget));
+
+        // Counted as a page view in Cloudflare Web Analytics. /joined also exists as a real page.
+        if (analyticsToken && !body.already_joined && window.location.pathname !== '/joined') {
+          history.pushState({ joined: true }, '', '/joined');
+        }
+      } catch (error) {
+        // Network failures surface as TypeError with a browser message people should not see.
+        status.textContent = error instanceof TypeError || !error.message
+          ? 'We could not add you just now. Please check your connection and try again.'
+          : error.message;
+        status.classList.add('error');
+        submit.disabled = false;
+        submit.innerHTML = original;
       }
     });
-  });
-
-  const modal = document.getElementById('videoModal');
-  document.getElementById('watchVideo')?.addEventListener('click', () => modal?.showModal());
-  document.getElementById('closeVideo')?.addEventListener('click', () => modal?.close());
-  modal?.addEventListener('click', (event) => {
-    const rect = modal.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) modal.close();
-  });
-
-  const form = document.getElementById('waitlistForm');
-  const status = document.getElementById('formStatus');
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    status.className = 'form-status';
-    const data = new FormData(form);
-    const email = String(data.get('email') || '').trim();
-    const consent = data.get('consent') === 'on';
-    if (!email || !consent) {
-      status.textContent = 'Please enter your email and confirm launch updates.';
-      status.classList.add('error');
-      return;
-    }
-    const submit = form.querySelector('button[type="submit"]');
-    const original = submit.innerHTML;
-    submit.disabled = true;
-    submit.textContent = 'Joining…';
-    try {
-      const res = await fetch('/api/waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, consent }) });
-      const payload = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(payload.error || 'Could not join right now.');
-      status.textContent = payload.already_joined ? 'You’re already on the VELI list ♡' : 'You’re on the VELI list ♡';
-      status.classList.add('success');
-      form.reset();
-    } catch {
-      status.textContent = 'The waitlist is being connected. Please try again shortly.';
-      status.classList.add('error');
-    } finally {
-      submit.disabled = false;
-      submit.innerHTML = original;
-    }
   });
 
   const year = document.getElementById('year');
