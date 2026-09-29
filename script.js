@@ -12,6 +12,65 @@
     reveals.forEach((el) => observer.observe(el));
   } else reveals.forEach((el) => el.classList.add('visible'));
 
+  const buildCampaignMedia = ({
+    section,
+    image,
+    alt,
+    eyebrow,
+    title,
+    features,
+    primaryLabel,
+    primaryHref,
+    secondaryLabel,
+    secondaryHref
+  }) => {
+    const media = document.querySelector(`${section} .editorial-media`);
+    if (!media) return;
+
+    media.classList.add('campaign-media');
+    media.innerHTML = `
+      <img src="${image}" alt="${alt}" />
+      <div class="campaign-shade" aria-hidden="true"></div>
+      <div class="campaign-content">
+        <div class="campaign-brand">VELI <span>✦</span></div>
+        <p class="campaign-eyebrow">${eyebrow}</p>
+        <h3>${title}</h3>
+        <div class="campaign-features">
+          ${features.map((feature) => `<span>${feature}</span>`).join('')}
+        </div>
+        <div class="campaign-actions">
+          <a class="campaign-button" href="${primaryHref}">${primaryLabel} <span aria-hidden="true">→</span></a>
+          ${secondaryLabel ? `<a class="campaign-link" href="${secondaryHref}">${secondaryLabel}</a>` : ''}
+        </div>
+      </div>`;
+  };
+
+  buildCampaignMedia({
+    section: '#safety',
+    image: './assets/file_00000000e60081f4a62a09177e301330.png',
+    alt: 'VELI supporting a safer evening journey with live location and safety awareness',
+    eyebrow: 'TRAVEL SAFER. STAY CONNECTED.',
+    title: 'Security that thinks ahead.',
+    features: ['Live journey', 'Auto capture', 'Trusted alerts', 'Quick SOS'],
+    primaryLabel: 'Meet VELI',
+    primaryHref: '#waitlist',
+    secondaryLabel: 'Explore the app',
+    secondaryHref: '#app'
+  });
+
+  buildCampaignMedia({
+    section: '#home-watch',
+    image: './assets/file_000000004c74821082663689a417a42c.png',
+    alt: 'VELI audio and video capture concept for intelligent home safety',
+    eyebrow: 'YOUR QUIET GUARDIAN',
+    title: 'Awake when something feels wrong.',
+    features: ['Smart detection', 'Wake + record', 'Trusted alerts', 'Secure storage'],
+    primaryLabel: 'Join the waitlist',
+    primaryHref: '#waitlist',
+    secondaryLabel: 'See safety features',
+    secondaryHref: '#app'
+  });
+
   const mainImage = document.getElementById('colorMainImage');
   document.querySelectorAll('.swatch').forEach((button) => {
     const src = button.dataset.image;
