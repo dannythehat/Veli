@@ -16,6 +16,14 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: a517d133ccec0093de719211a6694951
       PROJECT_NAME: meetveli
       D1_NAME: veli-waitlist
+      # Public address of the site, used for canonical, Open Graph and Twitter tags, the sitemap and email links.
+      # Leave empty to use whatever address the visitor came in on. Set it when the custom domain is live,
+      # for example: SITE_URL: https://meetveli.com
+      SITE_URL: ""
+      # Plan emails are sent with Resend once the RESEND_API_KEY secret is set and this sender is on a verified domain.
+      # Example: EMAIL_FROM: VELI <hello@meetveli.com>
+      EMAIL_FROM: ""
+      EMAIL_REPLY_TO: ""
 
     steps:
       - name: Checkout
@@ -70,7 +78,12 @@ jobs:
           [assets]
           directory = "."
           binding = "ASSETS"
-          run_worker_first = ["/api/*"]
+          run_worker_first = ["/api/*", "/admin", "/", "/index.html", "/check", "/check.html", "/check/*", "/joined", "/joined.html", "/sitemap.xml", "/robots.txt"]
+
+          [vars]
+          SITE_URL = "$SITE_URL"
+          EMAIL_FROM = "$EMAIL_FROM"
+          EMAIL_REPLY_TO = "$EMAIL_REPLY_TO"
 
           [[d1_databases]]
           binding = "WAITLIST_DB"
@@ -102,16 +115,22 @@ jobs:
           url=$(grep -Eo 'https://[^ ]+\.workers\.dev' /tmp/veli-deploy.log | tail -1 || true)
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
-      - name: Sync admin export token
+      - name: Sync Worker secrets
         env:
           VELI_ADMIN_TOKEN: ${{ secrets.VELI_ADMIN_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         shell: bash
         run: |
-          if [ -z "$VELI_ADMIN_TOKEN" ]; then
-            echo "VELI_ADMIN_TOKEN secret not set. Admin export stays disabled."
-            exit 0
+          if [ -n "$VELI_ADMIN_TOKEN" ]; then
+            printf '%s' "$VELI_ADMIN_TOKEN" | wrangler secret put ADMIN_TOKEN
+          else
+            echo "VELI_ADMIN_TOKEN secret not set. Admin pages stay disabled."
           fi
-          printf '%s' "$VELI_ADMIN_TOKEN" | wrangler secret put ADMIN_TOKEN
+          if [ -n "$RESEND_API_KEY" ]; then
+            printf '%s' "$RESEND_API_KEY" | wrangler secret put RESEND_API_KEY
+          else
+            echo "RESEND_API_KEY secret not set. Plans are shown on screen only."
+          fi
 
       - name: Verify live site
         if: steps.deploy.outputs.url != ''

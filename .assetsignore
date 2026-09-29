@@ -18,3 +18,4 @@ assets/video/README.md
 .dev.vars
 .gitignore
 .assetsignore
+server
