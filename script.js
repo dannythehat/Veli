@@ -12,16 +12,6 @@
     reveals.forEach((el) => observer.observe(el));
   } else reveals.forEach((el) => el.classList.add('visible'));
 
-  // Cloudflare Web Analytics. SPA mode lets the "/joined" virtual page view count waitlist signups.
-  const analyticsToken = window.VELI_CF_ANALYTICS_TOKEN;
-  if (analyticsToken) {
-    const beacon = document.createElement('script');
-    beacon.defer = true;
-    beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-    beacon.dataset.cfBeacon = JSON.stringify({ token: analyticsToken, spa: true });
-    document.head.appendChild(beacon);
-  }
-
   // Demo video only loads once it is near the screen, and only if the file exists.
   const video = document.querySelector('.demo-video video');
   if (video?.dataset.src) {
@@ -144,7 +134,7 @@
         success.querySelector('.share-button').addEventListener('click', (e) => shareSite(e.currentTarget));
 
         // Counted as a page view in Cloudflare Web Analytics. /joined also exists as a real page.
-        if (analyticsToken && !body.already_joined && window.location.pathname !== '/joined') {
+        if (window.VELI_CONFIG?.cfAnalyticsToken && !body.already_joined && window.location.pathname !== '/joined') {
           history.pushState({ joined: true }, '', '/joined');
         }
       } catch (error) {

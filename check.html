@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f2ea" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>The 60 Second Safety Check. VELI</title>
+  <meta name="description" content="How safe do you feel when you're out alone? Take the 60 second safety check. Get your personal safety plan and see how VELI is designed to help." />
+  <link rel="canonical" href="__SITE_URL__/check" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="VELI" />
+  <meta property="og:url" content="__SITE_URL__/check" />
+  <meta property="og:title" content="How safe do you feel when you're out alone?" />
+  <meta property="og:description" content="Take the 60 second safety check. Get your personal safety plan and see how VELI is designed to help." />
+  <meta property="og:image" content="__SITE_URL__/assets/web/og-check.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A woman walking through the city at night with VELI on her bag. Concept render." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="How safe do you feel when you're out alone?" />
+  <meta name="twitter:description" content="Take the 60 second safety check. Get your personal safety plan and see how VELI is designed to help." />
+  <meta name="twitter:image" content="__SITE_URL__/assets/web/og-check.jpg" />
+  <meta name="twitter:image:alt" content="A woman walking through the city at night with VELI on her bag. Concept render." />
+
+  <link rel="preload" as="image" href="/assets/web/check-hero-1100.webp" imagesrcset="/assets/web/check-hero-640.webp 640w, /assets/web/check-hero-1100.webp 1100w, /assets/web/check-hero-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap"></noscript>
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/check.css" />
+  <script src="/config.js"></script>
+</head>
+<body class="check-page">
+  <main id="quiz" data-screen="landing">
+    <section class="screen landing" aria-labelledby="landing-title">
+      <img class="landing-image" src="/assets/web/check-hero-1100.webp" srcset="/assets/web/check-hero-640.webp 640w, /assets/web/check-hero-1100.webp 1100w, /assets/web/check-hero-1600.webp 1600w" sizes="100vw" width="1600" height="2000" fetchpriority="high" alt="A woman walking through the city at night with VELI on her bag. Concept render." />
+      <div class="landing-shade" aria-hidden="true"></div>
+      <header class="check-header">
+        <a class="brand" href="/" aria-label="VELI home">VELI</a>
+        <a class="check-header-link" href="/">Back to site</a>
+      </header>
+      <div class="landing-copy">
+        <p class="eyebrow">THE 60 SECOND SAFETY CHECK</p>
+        <h1 id="landing-title">How safe do you feel when you're out alone?</h1>
+        <p class="landing-sub">Take the 60 second safety check. Get your personal safety plan and see how VELI is designed to help.</p>
+        <button class="button start-button" type="button" id="startCheck">Start my free check <span aria-hidden="true">→</span></button>
+        <p class="landing-note">10 quick questions. See your results straight away, no email needed.</p>
+      </div>
+    </section>
+
+    <section class="screen question-screen" aria-live="polite">
+      <div class="question-media" aria-hidden="true">
+        <img src="/assets/web/check-soft-1100.webp" srcset="/assets/web/check-soft-640.webp 640w, /assets/web/check-soft-1100.webp 1100w" sizes="(max-width: 900px) 100vw, 42vw" width="1100" height="1375" loading="lazy" decoding="async" alt="" />
+      </div>
+      <div class="question-panel">
+        <div class="question-top">
+          <button class="back-button" type="button" id="backButton" aria-label="Back to previous question">← Back</button>
+          <div class="progress" role="progressbar" aria-label="Safety check progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1"><span id="progressBar"></span></div>
+          <span class="progress-count" id="progressCount">1 of 10</span>
+        </div>
+        <div class="question-body" id="questionBody"></div>
+      </div>
+    </section>
+
+    <section class="screen result-screen" id="result" aria-labelledby="result-title" tabindex="-1">
+      <div class="result-hero">
+        <img src="/assets/web/check-result-1100.webp" srcset="/assets/web/check-result-640.webp 640w, /assets/web/check-result-1100.webp 1100w" sizes="100vw" width="1100" height="1375" loading="lazy" decoding="async" alt="Two friends laughing on a sunny street, both with VELI on their bags. Concept render." />
+        <div class="result-hero-copy">
+          <a class="brand" href="/" aria-label="VELI home">VELI</a>
+          <p class="eyebrow light">YOUR SAFETY CHECK</p>
+          <h1 id="result-title">Your results are ready.</h1>
+          <p>Based on your answers, these are the three things worth planning for.</p>
+        </div>
+      </div>
+
+      <div class="result-body">
+        <div class="concern-list" id="concernList"></div>
+
+        <section class="plan" aria-labelledby="plan-title">
+          <p class="eyebrow">WORKS TODAY, WITH OR WITHOUT VELI</p>
+          <h2 id="plan-title">Your personal safety plan</h2>
+          <p class="plan-circle" id="planCircle" hidden></p>
+          <ol class="plan-tips" id="planTips"></ol>
+        </section>
+
+        <section class="gate" id="gate" aria-labelledby="gate-title">
+          <div class="gate-colour" id="gateColour" hidden></div>
+          <h2 id="gate-title">Get your full plan and be first to meet VELI</h2>
+          <p>We will send your full plan to your inbox and let you know when VELI is ready.</p>
+          <form class="gate-form" id="gateForm" novalidate>
+            <label class="sr-only" for="gateEmail">Email address</label>
+            <input id="gateEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="Your email address" required />
+            <label class="gate-consent"><input type="checkbox" name="consent" required /> I agree to receive my plan and VELI launch updates. I can unsubscribe at any time.</label>
+            <div class="hp-field" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+            <button class="button" type="submit">Send my plan <span aria-hidden="true">→</span></button>
+            <p class="form-status" id="gateStatus" role="status" aria-live="polite"></p>
+          </form>
+          <button class="skip-link" type="button" id="skipGate">No thanks, just show my plan</button>
+        </section>
+
+        <section class="gate-success" id="gateSuccess" hidden tabindex="-1">
+          <h2>You're on the list. ♡</h2>
+          <p id="gateSuccessText"></p>
+          <button class="button button-ghost" type="button" id="shareCheck">Send the check to a friend</button>
+        </section>
+
+        <p class="concept-line">VELI is a concept in development. Features may change.</p>
+
+        <section class="check-privacy" aria-labelledby="check-privacy-title">
+          <h3 id="check-privacy-title">Your privacy</h3>
+          <p>We store your answers, your email if you give it, the time, the page that sent you here and a random session number. We use it to improve VELI and, if you ask, to email you. We never sell it. To stop spam we keep a scrambled version of your IP address for up to 24 hours. Every email tells you how to unsubscribe, and you can reply to any VELI email to have your details deleted.</p>
+        </section>
+
+        <a class="button button-ghost restart" href="/check">Take the check again</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="check-footer">
+    <p><strong>All images are concept renders, not photos of a finished product.</strong> VELI is a product in development.</p>
+    <p><a href="/">Meet VELI</a> · <a href="/#privacy">Privacy</a></p>
+  </footer>
+
+  <script type="module" src="/check.js"></script>
+</body>
+</html>

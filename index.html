@@ -4,23 +4,24 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f7f2ea" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>VELI. Looks like fashion. Thinks like a guardian.</title>
   <meta name="description" content="VELI is the AI safety companion that clips to your bag. One tap or one word and it records, shares your live location and alerts the people you trust. Join the waitlist." />
-  <link rel="canonical" href="https://meetveli.dannythehat2.workers.dev/" />
+  <link rel="canonical" href="__SITE_URL__/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="VELI" />
-  <meta property="og:url" content="https://meetveli.dannythehat2.workers.dev/" />
+  <meta property="og:url" content="__SITE_URL__/" />
   <meta property="og:title" content="VELI. Looks like fashion. Thinks like a guardian." />
   <meta property="og:description" content="The AI safety companion that clips to your bag, so help is one tap or one word away. Join the waitlist." />
-  <meta property="og:image" content="https://meetveli.dannythehat2.workers.dev/assets/web/og.jpg" />
+  <meta property="og:image" content="__SITE_URL__/assets/web/og.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="VELI, a soft sloth companion, clipped to the side of a handbag. Concept render." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="VELI. Looks like fashion. Thinks like a guardian." />
   <meta name="twitter:description" content="The AI safety companion that clips to your bag, so help is one tap or one word away." />
-  <meta name="twitter:image" content="https://meetveli.dannythehat2.workers.dev/assets/web/og.jpg" />
+  <meta name="twitter:image" content="__SITE_URL__/assets/web/og.jpg" />
   <meta name="twitter:image:alt" content="VELI, a soft sloth companion, clipped to the side of a handbag. Concept render." />
 
   <link rel="preload" as="image" href="./assets/web/hero-1100.webp" imagesrcset="./assets/web/hero-640.webp 640w, ./assets/web/hero-1100.webp 1100w" imagesizes="(max-width: 1000px) 100vw, 55vw" fetchpriority="high" />
@@ -32,8 +33,7 @@
   <link rel="stylesheet" href="./enhancements.css" />
   <link rel="stylesheet" href="./sections.css" />
 
-  <!-- Cloudflare Web Analytics. Paste the site token from Cloudflare dashboard > Analytics & Logs > Web Analytics. Leave empty to turn analytics off. -->
-  <script>window.VELI_CF_ANALYTICS_TOKEN = '';</script>
+  <script src="/config.js"></script>
 </head>
 <body>
   <header class="site-header" id="top">
@@ -44,7 +44,7 @@
       <a href="#helper">AI helper</a>
       <a href="#colours">Colours</a>
     </nav>
-    <a class="button button-small" href="#waitlist">Join the waitlist</a>
+    <a class="button button-small" href="/check">Safety check</a>
   </header>
 
   <main>
@@ -55,24 +55,10 @@
         <p class="hero-subtitle">Looks like fashion.<br>Thinks like a guardian.</p>
         <p class="hero-body">The AI safety companion that clips to your bag, so help is one tap or one word away.</p>
 
-        <form class="waitlist-form hero-form" data-location="hero" novalidate>
-          <div class="form-row">
-            <label class="sr-only" for="heroEmail">Email address</label>
-            <input id="heroEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="Your email address" required />
-            <button class="button" type="submit">Join the waitlist <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="optional-question" hidden>
-            <label for="heroAnswer">What worries you most when you're out alone? <span>Optional</span></label>
-            <input id="heroAnswer" name="answer" type="text" maxlength="500" autocomplete="off" placeholder="For example, walking home late" />
-          </div>
-          <div class="form-meta">
-            <label><input type="checkbox" name="consent" required /> I agree to receive VELI launch updates. I can unsubscribe at any time.</label>
-          </div>
-          <div class="hp-field" aria-hidden="true">
-            <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
-          </div>
-          <p class="form-status" role="status" aria-live="polite"></p>
-        </form>
+        <div class="hero-cta">
+          <a class="button check-cta" href="/check">Take the 60 second safety check <span aria-hidden="true">→</span></a>
+          <p class="hero-cta-note">Get your personal safety plan. Or <a href="#waitlist">just join the waitlist</a>.</p>
+        </div>
         <p class="signup-count" hidden></p>
       </div>
       <div class="hero-media">
@@ -162,8 +148,10 @@
       <div class="waitlist-image"><img src="./assets/web/waitlist-640.webp" srcset="./assets/web/waitlist-640.webp 640w, ./assets/web/waitlist-1100.webp 1100w" sizes="(max-width: 650px) 100vw, 40vw" width="1100" height="1375" loading="lazy" decoding="async" alt="A woman with coffee and VELI on her bag. Concept render." /></div>
       <div class="waitlist-copy">
         <p class="eyebrow">BE FIRST TO MEET VELI</p>
-        <h2>Join the VELI waitlist.</h2>
-        <p>Early access, product updates and first notice when reservations open.</p>
+        <h2>How safe do you feel out alone?</h2>
+        <p>Take the 60 second safety check. Get your personal safety plan and see how VELI is designed to help.</p>
+        <a class="button check-cta" href="/check">Take the 60 second safety check <span aria-hidden="true">→</span></a>
+        <p class="or-join">Or just join the waitlist for early access and first notice when reservations open.</p>
         <p class="signup-count" hidden></p>
         <form class="waitlist-form" data-location="footer" novalidate>
           <div class="form-row">
@@ -190,7 +178,7 @@
 
     <section class="privacy-note section-pad" id="privacy" aria-labelledby="privacy-title">
       <h2 id="privacy-title">Your privacy, in plain English.</h2>
-      <p>When you join, we store your email, your answer if you give one, the time you signed up, the page that sent you here and your country. We use it only to tell you about VELI. We never sell it or share it for marketing. To stop spam we keep a scrambled version of your IP address for up to 24 hours. Every email we send has an unsubscribe link, and you can reply to any VELI email to have your details deleted.</p>
+      <p>When you join or take the safety check, we store your email if you give it, your answers, the time, the page that sent you here and your country. We use it to improve VELI and to tell you about it. We never sell it or share it for marketing. To stop spam we keep a scrambled version of your IP address for up to 24 hours. Every email tells you how to unsubscribe, and you can reply to any VELI email to have your details deleted.</p>
     </section>
   </main>
 

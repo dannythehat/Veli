@@ -1,45 +1,12 @@
-const jsonHeaders = {
-  'content-type': 'application/json; charset=utf-8',
-  'cache-control': 'no-store'
-};
+import { json, clean, EMAIL_PATTERN, isRateLimited, siteUrl, providedToken, tokenMatches, csvResponse } from './server/common.js';
+import { handleProgress, handleSignup, quizExport } from './server/quiz.js';
+import { summaryPage, loginPage } from './server/admin.js';
 
-// Signups per IP address allowed inside the rate limit window.
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-// Attempt records are only kept long enough to rate limit.
-const ATTEMPT_RETENTION_MS = 24 * 60 * 60 * 1000;
 // The public counter stays hidden until the list is bigger than this.
 const COUNTER_THRESHOLD = 100;
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const json = (data, status = 200, extraHeaders = {}) =>
-  new Response(JSON.stringify(data), { status, headers: { ...jsonHeaders, ...extraHeaders } });
-
-const clean = (value, max) => String(value ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
-
-async function sha256Hex(text) {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function isRateLimited(request, env) {
-  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-  const ipHash = await sha256Hex(`${env.RATE_LIMIT_SALT || 'veli-waitlist'}:${ip}`);
-  const now = Date.now();
-
-  await env.WAITLIST_DB.batch([
-    env.WAITLIST_DB.prepare('DELETE FROM waitlist_attempts WHERE created_at < ?').bind(now - ATTEMPT_RETENTION_MS),
-    env.WAITLIST_DB.prepare('INSERT INTO waitlist_attempts (ip_hash, created_at) VALUES (?, ?)').bind(ipHash, now)
-  ]);
-
-  const row = await env.WAITLIST_DB
-    .prepare('SELECT COUNT(*) AS attempts FROM waitlist_attempts WHERE ip_hash = ? AND created_at >= ?')
-    .bind(ipHash, now - RATE_LIMIT_WINDOW_MS)
-    .first();
-
-  return (row?.attempts || 0) > RATE_LIMIT_MAX;
-}
+const SITE_URL_PLACEHOLDER = /__SITE_URL__/g;
+const HTML_PAGES = new Set(['/', '/index.html', '/check', '/check.html', '/joined', '/joined.html']);
+const PUBLIC_PATHS = ['/', '/check'];
 
 async function handleWaitlist(request, env) {
   if (request.method !== 'POST') {
@@ -72,7 +39,7 @@ async function handleWaitlist(request, env) {
     return json({ error: 'Waitlist storage is not configured yet.' }, 503);
   }
 
-  if (await isRateLimited(request, env)) {
+  if (await isRateLimited(request, env, { bucket: 'waitlist', max: 5, windowMs: 10 * 60 * 1000 })) {
     return json({ error: 'Too many tries. Please wait a few minutes and try again.' }, 429, { 'retry-after': '600' });
   }
 
@@ -109,70 +76,84 @@ async function handleCount(env) {
   return json({ count: total > COUNTER_THRESHOLD ? total : null }, 200, { 'cache-control': 'public, max-age=60' });
 }
 
-async function tokenMatches(provided, expected) {
-  const [a, b] = await Promise.all([sha256Hex(provided), sha256Hex(expected)]);
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
-function csvCell(value) {
-  let text = value == null ? '' : String(value);
-  // Stop spreadsheet apps treating free text as a formula.
-  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
-  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
-async function handleExport(request, env) {
-  if (!env.ADMIN_TOKEN) return json({ error: 'Not found.' }, 404);
-
-  const url = new URL(request.url);
-  const header = request.headers.get('authorization') || '';
-  const provided = header.startsWith('Bearer ') ? header.slice(7) : url.searchParams.get('token') || '';
-
-  if (!provided || !(await tokenMatches(provided, env.ADMIN_TOKEN))) {
-    return json({ error: 'Unauthorised.' }, 401);
-  }
-  if (!env.WAITLIST_DB) {
-    return json({ error: 'Waitlist storage is not configured yet.' }, 503);
-  }
-
+async function waitlistExport(env) {
   const { results = [] } = await env.WAITLIST_DB
     .prepare('SELECT id, email, answer, created_at, referrer, source, country FROM waitlist ORDER BY created_at ASC')
     .all();
+  return csvResponse(['id', 'email', 'answer', 'created_at', 'referrer', 'source', 'country'], results, 'veli-waitlist');
+}
 
+async function handleAdmin(request, env, url) {
+  if (!env.ADMIN_TOKEN) return json({ error: 'Not found.' }, 404);
+  const token = providedToken(request);
+  const html = { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-robots-tag': 'noindex', 'referrer-policy': 'no-referrer' };
+
+  if (!(await tokenMatches(token, env.ADMIN_TOKEN))) {
+    if (url.pathname === '/admin') return new Response(loginPage, { status: token ? 401 : 200, headers: html });
+    return json({ error: 'Unauthorised.' }, 401);
+  }
+  if (!env.WAITLIST_DB) return json({ error: 'Storage is not configured yet.' }, 503);
+
+  if (url.pathname === '/admin') return new Response(await summaryPage(env, token), { headers: html });
+  if (url.pathname === '/api/admin/quiz-export') return quizExport(env);
   if (url.searchParams.get('format') === 'json') {
+    const { results = [] } = await env.WAITLIST_DB.prepare('SELECT id, email, answer, created_at, referrer, source, country FROM waitlist ORDER BY created_at ASC').all();
     return json({ total: results.length, signups: results });
   }
+  return waitlistExport(env);
+}
 
-  const columns = ['id', 'email', 'answer', 'created_at', 'referrer', 'source', 'country'];
-  const csv = [columns.join(','), ...results.map((row) => columns.map((c) => csvCell(row[c])).join(','))].join('\r\n');
-  const stamp = new Date().toISOString().slice(0, 10);
+// Fills __SITE_URL__ in page meta tags (canonical, Open Graph, Twitter) from the SITE_URL setting.
+async function servePage(request, env, url) {
+  // Every /check/... address is the same quiz page. The quiz uses them for analytics page views.
+  const assetUrl = url.pathname.startsWith('/check/') ? new URL('/check', url) : url;
+  const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+  if (!response.ok || !(response.headers.get('content-type') || '').includes('text/html')) return response;
 
-  return new Response(csv, {
-    headers: {
-      'content-type': 'text/csv; charset=utf-8',
-      'content-disposition': `attachment; filename="veli-waitlist-${stamp}.csv"`,
-      'cache-control': 'no-store',
-      'x-robots-tag': 'noindex'
-    }
+  const body = (await response.text()).replace(SITE_URL_PLACEHOLDER, siteUrl(env, request));
+  const headers = new Headers(response.headers);
+  headers.delete('content-length');
+  headers.delete('etag');
+  headers.set('cache-control', 'public, max-age=0, must-revalidate');
+  return new Response(body, { status: response.status, headers });
+}
+
+function sitemap(env, request) {
+  const base = siteUrl(env, request);
+  const urls = PUBLIC_PATHS.map((path) => `  <url><loc>${base}${path === '/' ? '/' : path}</loc></url>`).join('\n');
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`, {
+    headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' }
+  });
+}
+
+function robots(env, request) {
+  return new Response(`User-agent: *\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${siteUrl(env, request)}/sitemap.xml\n`, {
+    headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=3600' }
   });
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const path = url.pathname;
 
     try {
-      if (url.pathname === '/api/waitlist') return await handleWaitlist(request, env);
-      if (url.pathname === '/api/waitlist/count' && request.method === 'GET') return await handleCount(env);
-      if (url.pathname === '/api/admin/export' && request.method === 'GET') return await handleExport(request, env);
+      if (path === '/api/waitlist') return await handleWaitlist(request, env);
+      if (path === '/api/waitlist/count' && request.method === 'GET') return await handleCount(env);
+      if (path === '/api/quiz/progress') return await handleProgress(request, env);
+      if (path === '/api/quiz/signup') return await handleSignup(request, env);
+      if ((path === '/admin' || path === '/api/admin/export' || path === '/api/admin/quiz-export') && request.method === 'GET') {
+        return await handleAdmin(request, env, url);
+      }
     } catch (error) {
       console.error('API error', error);
       return json({ error: 'Something went wrong. Please try again.' }, 500);
     }
 
-    if (url.pathname.startsWith('/api/')) return json({ error: 'Not found.' }, 404);
+    if (path.startsWith('/api/')) return json({ error: 'Not found.' }, 404);
+    if (path === '/sitemap.xml') return sitemap(env, request);
+    if (path === '/robots.txt') return robots(env, request);
+    if (HTML_PAGES.has(path) || path.startsWith('/check/')) return servePage(request, env, url);
 
     return env.ASSETS.fetch(request);
   }
