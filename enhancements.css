@@ -130,8 +130,40 @@ body{background:var(--veli-paper)}
   .editorial-section .editorial-media{order:1}
   .editorial-section .editorial-copy{order:2;max-width:none}
   .editorial-media img{min-height:0;height:auto;aspect-ratio:4/5;object-fit:cover}
-  .campaign-media{min-height:760px}
-  .campaign-media>img{position:absolute;height:100%;aspect-ratio:auto;min-height:100%}
+
+  /* Keep the physical VELI completely unobstructed on tablets and phones. */
+  .editorial-section.has-campaign-media{display:block;min-height:0;background:#241f1b}
+  .editorial-section.has-campaign-media>.editorial-copy{display:none}
+  .campaign-media{display:grid;grid-template-rows:auto auto;min-height:0;background:#241f1b}
+  .campaign-media>img{
+    position:relative;
+    inset:auto;
+    display:block;
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    object-position:center;
+    transform:none;
+    z-index:0
+  }
+  .campaign-shade{display:none}
+  .campaign-content{
+    position:relative;
+    left:auto;
+    right:auto;
+    bottom:auto;
+    z-index:2;
+    max-width:none;
+    padding:34px clamp(26px,6vw,56px) 40px;
+    background:linear-gradient(180deg,#2b241f 0%,#211c18 100%);
+    color:#fff
+  }
+  .campaign-content h3{max-width:760px;margin-bottom:20px;text-shadow:none}
+  .campaign-brand{text-shadow:none}
+  .campaign-features span{background:rgba(255,255,255,.055);backdrop-filter:none}
+
   .social-section,.movement-section{grid-template-columns:1fr}
   .social-media{order:-1}
   .movement-copy{max-width:none}
@@ -148,17 +180,19 @@ body{background:var(--veli-paper)}
   .editorial-copy{padding:58px 24px}
   .editorial-copy h2{font-size:50px}
   .editorial-media img{aspect-ratio:4/5}
-  .campaign-media{min-height:660px}
-  .campaign-media>img{aspect-ratio:auto;height:100%;min-height:100%;object-position:center}
-  .campaign-shade{background:linear-gradient(180deg,rgba(25,20,17,.04),rgba(25,20,17,.18) 45%,rgba(25,20,17,.88) 100%)}
-  .campaign-content{left:24px;right:24px;bottom:28px}
-  .campaign-brand{font-size:28px}
-  .campaign-content h3{font-size:47px;max-width:520px}
+
+  .campaign-media{min-height:0}
+  .campaign-media>img{height:auto;min-height:0;aspect-ratio:4/5;object-position:center}
+  .campaign-content{padding:28px 24px 34px}
+  .campaign-brand{font-size:25px;letter-spacing:.24em;margin-right:-.24em}
+  .campaign-eyebrow{margin:15px 0 10px;font-size:9px;letter-spacing:.22em}
+  .campaign-content h3{font-size:39px;line-height:1.02;max-width:520px;margin-bottom:19px}
   .campaign-features{gap:6px;margin-bottom:22px}
   .campaign-features span{padding:8px 10px;font-size:9px}
-  .campaign-button{width:100%;min-width:0}
+  .campaign-button{width:100%;min-width:0;padding:15px 20px}
   .campaign-actions{gap:13px}
   .campaign-link{width:100%;text-align:center;border-bottom:0;text-decoration:underline;text-underline-offset:4px}
+
   .app-grid{grid-template-columns:1fr}
   .app-grid article{min-height:0}
   .colour-gallery{grid-template-columns:1fr}
