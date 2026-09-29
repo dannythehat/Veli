@@ -29,6 +29,9 @@
     if (!media) return;
 
     media.classList.add('campaign-media');
+    const editorialSection = media.closest('.editorial-section');
+    editorialSection?.classList.add('has-campaign-media');
+
     media.innerHTML = `
       <img src="${image}" alt="${alt}" />
       <div class="campaign-shade" aria-hidden="true"></div>
